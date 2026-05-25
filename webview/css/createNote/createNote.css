@@ -1,0 +1,357 @@
+/* ═══════════════════════════════════════════════
+   createNote.css — editor de nova anotação
+═══════════════════════════════════════════════ */
+
+:root {
+  --bg: #1e2127;
+  --bg-elevated: #282c34;
+  --border: #3e4451;
+  --text: #abb2bf;
+  --text-muted: #5c6370;
+  --accent: #61afef;
+  --accent-hover: #528bcc;
+  --radius: 6px;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13px;
+  padding: 20px 20px 80px; /* espaço para o footer fixo */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+/* ── Header ── */
+.header {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+/* ── Title Input ── */
+input[type="text"] {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13px;
+  outline: none;
+}
+
+input[type="text"]:focus { border-color: var(--accent); }
+input::placeholder { color: var(--text-muted); }
+
+/* ── Code Block ── */
+.code-block {
+  background: #1a1d23;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.code-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.code-label span:last-child {
+  margin-left: auto;
+  color: var(--text-muted);
+}
+
+pre {
+  padding: 12px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text);
+  margin: 0;
+}
+
+/* ── Editor Wrap ── */
+.editor-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* ── EasyMDE overrides to match VS Code dark theme ── */
+.EasyMDEContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.EasyMDEContainer .CodeMirror {
+  background: var(--bg-elevated);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  height: auto;
+  min-height: 200px;
+  padding: 4px;
+}
+
+.EasyMDEContainer .CodeMirror:focus-within {
+  border-color: var(--accent);
+}
+
+.EasyMDEContainer .CodeMirror-scroll {
+  min-height: 200px;
+}
+
+.EasyMDEContainer .CodeMirror-cursor {
+  border-left: 1px solid var(--text);
+}
+
+.EasyMDEContainer .CodeMirror-selected {
+  background: rgba(97, 175, 239, 0.2) !important;
+}
+
+/* Toolbar */
+.editor-toolbar {
+  background: #1a1d23;
+  border: 1px solid var(--border);
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding: 4px 6px;
+  opacity: 1;
+}
+
+.editor-toolbar button {
+  color: var(--text-muted) !important;
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+}
+
+.editor-toolbar button:hover,
+.editor-toolbar button.active {
+  background: var(--bg-elevated) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+
+.editor-toolbar i.separator {
+  border-left: 1px solid var(--border);
+}
+
+.editor-toolbar .checklist-btn::before {
+  content: '☑';
+  font-size: 14px;
+  line-height: 28px;
+}
+
+/* Preview mode */
+.editor-preview {
+  background: var(--bg-elevated);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 12px 16px;
+  line-height: 1.7;
+}
+
+.editor-preview h1,
+.editor-preview h2,
+.editor-preview h3 {
+  color: var(--text);
+  font-weight: 600;
+  margin: 12px 0 6px;
+}
+
+.editor-preview h1 { font-size: 18px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+.editor-preview h2 { font-size: 15px; }
+.editor-preview h3 { font-size: 13px; }
+
+.editor-preview p { margin: 6px 0; }
+
+.editor-preview ul,
+.editor-preview ol {
+  padding-left: 20px;
+  margin: 6px 0;
+}
+
+.editor-preview code {
+  background: rgba(97, 175, 239, 0.15);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+}
+
+.editor-preview pre {
+  background: #1a1d23;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  overflow-x: auto;
+}
+
+.editor-preview pre code {
+  background: none;
+  padding: 0;
+  color: var(--text);
+}
+
+.editor-preview blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 12px;
+  margin: 8px 0;
+  color: var(--text-muted);
+}
+
+.editor-preview table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0;
+  font-size: 12px;
+}
+
+.editor-preview th,
+.editor-preview td {
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  text-align: left;
+}
+
+.editor-preview th {
+  background: #1a1d23;
+  color: var(--text);
+}
+
+.editor-preview input[type="checkbox"] {
+  accent-color: var(--accent);
+}
+
+/* Side-by-side mode */
+.editor-preview-side {
+  background: var(--bg-elevated);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-left: none;
+  padding: 12px 16px;
+  line-height: 1.7;
+}
+
+/* CodeMirror markdown syntax colors */
+.cm-s-easymde .cm-header { color: var(--accent); font-weight: 600; }
+.cm-s-easymde .cm-strong { color: #e5c07b; font-weight: 600; }
+.cm-s-easymde .cm-em { color: #c678dd; font-style: italic; }
+.cm-s-easymde .cm-link { color: var(--accent); }
+.cm-s-easymde .cm-url { color: #5c6370; }
+.cm-s-easymde .cm-quote { color: var(--text-muted); font-style: italic; }
+.cm-s-easymde .cm-comment { color: #98c379; font-family: var(--font-mono); }
+
+/* ── Footer ── */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  z-index: 10;
+}
+
+/* ── Buttons ── */
+.btn {
+  padding: 8px 20px;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btn:hover { opacity: 0.85; }
+.btn:active { opacity: 0.7; }
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  color: var(--text);
+  border-color: var(--text-muted);
+}
+
+.scope-selector{
+  display: flex;
+  gap: 4px;
+}
+
+.scope-btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s;
+}
+
+.scope-btn:hover{
+  color: var(--text);
+  border-color: var(--text-muted);
+}
+
+.scope-btn.active[data-scope="private"]{
+  color: #c678dd;
+  border-color: #c678dd;
+  background: rgba(198,120,221,.08);
+}
+
+.scope-btn.active[data-scope="public"]{
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(97, 175, 239, .08);
+}
+
+.footer-actions{
+  display: flex;
+  gap: 8px;
+}

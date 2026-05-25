@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'none'; style-src {{WEBVIEW_CSP_SOURCE}}; script-src 'nonce-{{NONCE}}';" />
+  <link rel="stylesheet" href="{{NO_SESSION_CSS_URI}}" />
+  <title>CodeNotes</title>
+</head>
+<body>
+
+  <div class="ns-container">
+
+    <div class="ns-logo-area">
+      <div class="ns-icon">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="1" width="34" height="34" rx="7"
+            stroke="var(--vscode-focusBorder, #4fc3f7)" stroke-width="1.5" fill="none"/>
+          <path d="M10 13h16M10 18h10M10 23h13"
+            stroke="var(--vscode-focusBorder, #4fc3f7)" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="27" cy="23" r="3.5"
+            fill="var(--vscode-focusBorder, #4fc3f7)" opacity="0.9"/>
+        </svg>
+      </div>
+      <span class="ns-title">CodeNotes</span>
+      <p class="ns-subtitle">Sign in to start annotating your code</p>
+    </div>
+
+    <div class="ns-divider"></div>
+
+    <div class="ns-buttons">
+
+      <button class="ns-btn ns-btn--github" id="btn-github">
+        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+        </svg>
+        Continue with GitHub
+      </button>
+
+      <button class="ns-btn ns-btn--azure" id="btn-azure">
+        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13.05 4.24L6.56 18.05l-3.76.01 5.4-9.3-3.43-4.1 8.28-.42zm.78-.36L22.2 5.02l-7.06 12.89-4.17.01 2.86-14.04z"/>
+        </svg>
+        Continue with Azure
+      </button>
+
+    </div>
+
+    <p class="ns-hint">Your notes are stored locally and linked to your account.</p>
+
+  </div>
+
+  <script nonce="{{NONCE}}">
+    const vscode = acquireVsCodeApi();
+
+    document.getElementById('btn-github').addEventListener('click', () => {
+      vscode.postMessage({ type: 'loginGitHub' });
+      setLoading('btn-github', 'Connecting…');
+    });
+
+    document.getElementById('btn-azure').addEventListener('click', () => {
+      vscode.postMessage({ type: 'loginAzure' });
+      setLoading('btn-azure', 'Connecting…');
+    });
+
+    window.addEventListener('message', event => {
+      const msg = event.data;
+      if (msg.type === 'loginError') {
+        resetLoading(msg.provider === 'github' ? 'btn-github' : 'btn-azure');
+      }
+    });
+
+    function setLoading(id, text) {
+      const btn = document.getElementById(id);
+      btn.dataset.original = btn.innerText.trim();
+      btn.innerText = text;
+      btn.disabled = true;
+      btn.classList.add('ns-btn--loading');
+    }
+
+    function resetLoading(id) {
+      const btn = document.getElementById(id);
+      btn.innerText = btn.dataset.original || btn.innerText;
+      btn.disabled = false;
+      btn.classList.remove('ns-btn--loading');
+    }
+  </script>
+
+</body>
+</html>

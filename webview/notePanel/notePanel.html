@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'none';
+            style-src {{CSP_SOURCE}} https://cdn.jsdelivr.net 'unsafe-inline';
+            script-src 'nonce-{{NONCE}}' https://cdn.jsdelivr.net;
+            font-src https://cdn.jsdelivr.net https://use.fontawesome.com data:;">
+  <title>CodeNote</title>
+  <link rel="stylesheet" href="{{CSS_URI}}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css">
+</head>
+<body>
+
+  <div class="top-bar">
+    <div class="top-bar-left">
+      {{EDIT_BUTTON}}
+    </div>
+    <span class="top-bar-date">{{DATE}}</span>
+  </div>
+
+  <div class="content">
+
+    <div class="meta-row">
+      {{FILE_INFO}}
+    </div>
+
+    {{CODE_BLOCK}}
+
+    {{MARKDOWN}}
+
+  </div>
+
+  {{DELETE_BUTTON}}
+
+  <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+  <script nonce="{{NONCE}}">
+    // Aplicar syntax highlighting a todos os blocos de código
+    document.querySelectorAll('pre code').forEach(block => {
+      hljs.highlightElement(block);
+    });
+    const vscode = acquireVsCodeApi();
+    const noteId = '{{NOTE_ID}}';
+
+    let editing = false;
+    let easyMDE = null;
+
+    // ── Delete ──────────────────────────────────────────────────────────────
+    const btn = document.getElementById('btn-delete');
+    if (btn) {
+      btn.addEventListener('click', () => {
+        vscode.postMessage({ command: 'delete', id: btn.dataset.id });
+      });
+    }
+
+    // ── Edit / Save ─────────────────────────────────────────────────────────
+    const btnEdit = document.getElementById('btn-edit');
+    if (btnEdit) {
+      btnEdit.addEventListener('click', () => {
+        editing = !editing;
+        const viewMode = document.getElementById('view-mode');
+        const editMode = document.getElementById('edit-mode');
+
+        if (editing) {
+          // switch to edit mode
+          viewMode.style.display = 'none';
+          editMode.style.display = 'block';
+          btnEdit.innerHTML = `
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v14a2 2 0 0 1-2 2z"/>
+              <polyline points="17 21 17 13 7 13 7 21"/>
+              <polyline points="7 3 7 8 15 8"/>
+            </svg> Save`;
+          btnEdit.classList.add('saving');
+
+          if (!easyMDE) {
+            easyMDE = new EasyMDE({
+              element: editMode,
+              spellChecker: false,
+              autofocus: true,
+              toolbar: [
+                'bold', 'italic', 'strikethrough', '|',
+                'heading-1', 'heading-2', 'heading-3', '|',
+                'code', 'quote', '|',
+                'unordered-list', 'ordered-list',
+                {
+                  name: 'checklist',
+                  action: function(editor) {
+                    const cm = editor.codemirror;
+                    const doc = cm.getDoc();
+                    const cursor = doc.getCursor();
+                    const lineText = doc.getLine(cursor.line);
+                    if (lineText.match(/^- \[[ x]\] /)) {
+                      doc.replaceRange(
+                        lineText.replace(/^- \[[ x]\] /, ''),
+                        { line: cursor.line, ch: 0 },
+                        { line: cursor.line, ch: lineText.length }
+                      );
+                    } else {
+                      doc.replaceRange(
+                        '- [ ] ' + lineText,
+                        { line: cursor.line, ch: 0 },
+                        { line: cursor.line, ch: lineText.length }
+                      );
+                    }
+                  },
+                  className: 'checklist-btn',
+                  title: 'Checklist',
+                },
+                '|', 'link', 'table', '|', 'preview'
+              ],
+              status: false,
+              minHeight: '300px',
+            });
+          } else {
+            easyMDE.codemirror.refresh();
+          }
+
+        } else {
+          // switch back to view mode — send save
+          const text = easyMDE ? easyMDE.value() : editMode.value;
+          vscode.postMessage({ command: 'save', id: noteId, text });
+        }
+      });
+    }
+
+    // ── Checklist checkboxes (view mode) ────────────────────────────────────
+    document.querySelectorAll('.md-checklist input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const li = cb.closest('li');
+        if (li) { li.classList.toggle('done', cb.checked); }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'none'; style-src {{WEBVIEW_CSP_SOURCE}} 'unsafe-inline'; script-src 'nonce-{{NONCE}}' {{WEBVIEW_CSP_SOURCE}};" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  <link rel="stylesheet" href="{{GLOBAL_CSS_URI}}">
+  <link rel="stylesheet" href="{{INDEX_CSS_URI}}">
+  <style>
+    #ctx-hint { cursor: default; border-radius: 4px; padding: 2px 6px; transition: background .15s, color .15s; }
+    #ctx-hint.anchor-available { cursor: pointer; opacity: .7; }
+    #ctx-hint.anchor-available:hover { opacity: 1; background: rgba(255,255,255,.06); }
+    #ctx-hint.anchor-active { cursor: pointer; color: #61AFEF; background: rgba(97,175,239,.12); }
+    #ctx-hint.anchor-active:hover { background: rgba(97,175,239,.2); }
+  </style>
+<base target="_blank">
+</head>
+<body>
+<div class="sidebar">
+
+  <div class="toolbar">
+    <span class="toolbar-title">DevNotes</span>
+    <div class="toolbar-actions">
+      <button class="icon-btn" id="btn-file-filter" title="Filter by current file">
+        <i class="ti ti-file-code"></i>
+      </button>
+      <button class="icon-btn" id="btn-sync" title="Sync public notes">
+        <i class="ti ti-refresh"></i>
+      </button>
+      <button class="icon-btn" id="btn-github" title="GitHub Account">
+        <i class="ti ti-brand-github"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="search-bar">
+    <div class="search-wrap">
+      <i class="ti ti-search"></i>
+      <input class="search-input" type="text" id="search-input" placeholder="Search notes...">
+    </div>
+  </div>
+
+  <div class="filter-row">
+    <button class="filter-btn active" id="f-all">All</button>
+    <button class="filter-btn" id="f-private">Personal</button>
+    <button class="filter-btn" id="f-public">Project</button>
+  </div>
+
+  <div class="notes-list" id="notes-list">
+    <div class="empty-state">
+      <i class="ti ti-loader"></i>
+      <p>Loading...</p>
+    </div>
+  </div>
+
+  <div class="compose-panel">
+    <div class="compose-header" id="compose-header">
+      <span class="compose-title">
+        <i class="ti ti-plus"></i>New Note
+      </span>
+      <i class="ti ti-chevron-down compose-chevron open" id="compose-chevron"></i>
+    </div>
+    <div class="compose-body open" id="compose-body">
+      <button class="btn-new-note" id="btn-new-note">
+        <i class="ti ti-plus"></i> New Note
+      </button>
+    </div>
+    </div>
+  </div>
+
+</div>
+<!-- editor.js must be loaded BEFORE main.js -->
+<script nonce="{{NONCE}}" src="{{EDITOR_JS_URI}}"></script>
+<script nonce="{{NONCE}}" src="{{NOTE_GROUPS_JS_URI}}"></script>
+<script nonce="{{NONCE}}" src="{{JS_URI}}"></script>
+</body>
+</html>

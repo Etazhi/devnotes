@@ -1,0 +1,96 @@
+{
+  "name": "devnotes",
+  "displayName": "DevNotes",
+  "description": "Attach Markdown notes to your code, directly inside VS Code.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.120.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "extensionDependencies": [
+    "vscode.git"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "devnotes-sidebar",
+          "title": "DevNotes",
+          "icon": "images/img.svg"
+        }
+      ]
+    },
+    "views": {
+      "devnotes-sidebar": [
+        {
+          "id": "devnotesView",
+          "name": "DevNotes",
+          "type": "webview",
+          "initialSize": 700
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "devnotes.signInGitHub",
+        "title": "DevNotes: Sign in with GitHub"
+      },
+      {
+        "command": "devnotes.signInAzure",
+        "title": "DevNotes: Sign in with Azure"
+      },
+      {
+        "command": "devnotes.addNote",
+        "title": "DevNotes: Add Note"
+      },
+      {
+        "command": "devnotes.deleteNote",
+        "title": "DevNotes: Delete Note"
+      },
+      {
+        "command": "devnotes.openNote",
+        "title": "DevNotes: Open Note"
+      },
+      {
+        "command": "devnotes.clearData",
+        "title": "DevNotes: Clear Data"
+      },
+      {
+        "command": "devnotes.clearSession",
+        "title": "DevNotes: Clear Session"
+      },
+      {
+        "command": "devnotes.debug",
+        "title": "DevNotes: Debug"
+      },
+      {
+        "command": "devnotes.debug2",
+        "title": "DevNotes: Debug2"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.19.19",
+    "@types/vscode": "^1.120.0",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.39.3",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.56.1"
+  }
+}

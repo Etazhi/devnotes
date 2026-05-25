@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en"> 
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="Content-Security-Policy" content="{{CSP}}">
+        <link rel="stylesheet" href="{{CSS_URI}}">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css">
+        <base target="_blank">
+    </head>
+    <body>
+        <div class="header">
+            DevNotes - New Annotation
+        </div>
+        <input type="text" id="title-input" placeholder="Note title...">
+
+        <div class="code-block" id="code-section" style="display: none;">
+            <div class="code-label">
+                <span id="code-file">file.ts</span>
+                <span id="code-lines">L10-L15</span>
+            </div>
+            <pre><code id="code-content">selected code...</code></pre>
+        </div>
+
+        <div class="editor-wrap">
+            <textarea id="note-text"></textarea>
+        </div>
+        
+        <div class="footer">
+            <div class="scope-selector">
+                <button class="scope-btn active" id="scope-private" data-scope="private">
+                    <svg with="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-widht="2"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+                    Personal
+                </button>
+                <button class="scope-btn" id="scope-public" data-scope="public">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+                    Project
+                </button>
+            </div>
+            <div class="footer-actions">
+                <button class="btn btn-secondary" id="btn-cancel">Cancel</button>
+                <button class="btn btn-primary" id="btn-save">Save</button>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+        <script nonce="{{NONCE}}">
+            const vscode = acquireVsCodeApi();
+
+            const easyMDE = new EasyMDE({
+                element: document.getElementById('note-text'),
+                placeholder: 'Write your note in Markdown...',
+                spellChecker: false,
+                autofocus: true,
+                toolbar: ['bold','italic','strikethrough','|','heading-1','heading-2','heading-3','|','code','quote','|','unordered-list','ordered-list',
+                    {
+                        name: 'checklist',
+                        action: function(editor) {
+                            const cm = editor.codemirror;
+                            const doc = cm.getDoc();
+                            const cursor = doc.getCursor();
+                            const lineText = doc.getLine(cursor.line);
+                            if (lineText.match(/^- \[[ x]\] /)) {
+                                doc.replaceRange(
+                                    lineText.replace(/^- \[[ x]\] /, ''),
+                                    { line: cursor.line, ch: 0 },
+                                    { line: cursor.line, ch: lineText.length }
+                                );
+                            } else {
+                                doc.replaceRange(
+                                    '- [ ] ' + lineText,
+                                    { line: cursor.line, ch: 0 },
+                                    { line: cursor.line, ch: lineText.length }
+                                );
+                            }
+                        },
+                        className: 'checklist-btn',
+                        title: 'Checklist',
+                    },'|','link','table','|','preview'],
+                renderingConfig: {
+                    singleLineBreaks: false,
+                    codeSyntaxHighlighting: true,
+                },
+                status: false,
+                minHeight: '200px',
+            });
+
+            window.addEventListener('message', e => {
+                const msg = e.data;
+                if (msg.type === 'init') {
+                    if (msg.code) {
+                        document.getElementById('code-section').style.display = 'block';
+                        document.getElementById('code-file').textContent = msg.fileName || 'file';
+                        document.getElementById('code-lines').textContent = msg.lines || '';
+                        const codeEl = document.getElementById('code-content');
+                        codeEl.textContent = msg.code;
+                        if (msg.languageId) {
+                            codeEl.className = `language-${msg.languageId}`;
+                        }
+                        hljs.highlightElement(codeEl);
+                    }
+                }
+            });
+
+            document.getElementById('btn-cancel').addEventListener('click', () => {
+                vscode.postMessage({ type: 'cancel' });
+            });
+
+            let selectedScope = 'private';
+
+            document.querySelectorAll('.scope-btn').forEach(btn => {
+                btn.addEventListener('click', () =>{
+                    selectedScope = btn.dataset.scope;
+                    document.querySelectorAll('.scope-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+
+            document.getElementById('btn-save').addEventListener('click', () => {
+                const title = document.getElementById('title-input').value.trim();
+                const text = easyMDE.value().trim();
+
+                if (!title && !text) {
+                    vscode.postMessage({ type: 'cancel' });
+                    return;
+                }
+
+                const fullText = title ? `# ${title}\n\n${text}` : text;
+                const codeSnippet = document.getElementById('code-content').textContent || undefined;
+                
+                vscode.postMessage({
+                    type: 'save',
+                    text: fullText,
+                    scope: selectedScope,
+                    codeSnippet: codeSnippet !=='selected code...' ? codeSnippet: undefined
+                });
+            });
+        </script>
+    </body>
+</html>
