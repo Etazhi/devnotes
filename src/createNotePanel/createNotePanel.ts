@@ -54,7 +54,7 @@ export class CreateNotePanel {
 
         this.panel = vscode.window.createWebviewPanel(
             'createNotePanel',
-            'CodeNotes - New Note',
+            'DevNotes - New Note',
             vscode.ViewColumn.Beside,
             {
                 enableScripts: true,
