@@ -88,7 +88,7 @@
     const date  = n.createdAt.slice(0, 10);
 
     return `
-      <div class="note-item" id="note-${n.id}" data-id="${n.id}" role="button" tabindex="0" title="Abrir nota">
+      <div class="note-item" id="note-${n.id}" data-id="${n.id}" role="button" tabindex="0" title="Open note">
         <div class="note-item-inner">
           <span class="note-title-text">${escapeHtml(title)}</span>
           <span class="note-date">${date}</span>
