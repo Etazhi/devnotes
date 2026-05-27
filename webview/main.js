@@ -130,7 +130,7 @@
   function buildEmptyState() {
     return '<div class="empty-state">'
       + '<i class="ti ti-notes-off"></i>'
-      + '<p>Sem anotações.<br>Cria uma nova abaixo.</p>'
+      + '<p>Empty Notes.<br>Create one bellow.</p>'
       + '</div>';
   }
 
