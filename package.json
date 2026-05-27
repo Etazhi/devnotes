@@ -1,6 +1,6 @@
 {
   "name": "devnotes-etazhi",
-  "displayName": "DevNotes",
+  "displayName": "DevNotes by Etazhi",
   "description": "Attach Markdown notes to your code, directly inside VS Code.",
   "version": "0.0.1",
   "publisher": "Etazhi",
