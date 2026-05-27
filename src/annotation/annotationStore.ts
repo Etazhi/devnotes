@@ -138,7 +138,7 @@ export class AnnotationStore {
   private getNotesDirPath(): string | null {
     const workspace = vscode.workspace.workspaceFolders?.[0];
     if (!workspace) return null;
-    const dir = path.join(workspace.uri.fsPath, '.codenotes');
+    const dir = path.join(workspace.uri.fsPath, '.devnotes');
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     return dir;
   }
