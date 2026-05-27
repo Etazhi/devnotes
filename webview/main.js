@@ -97,9 +97,9 @@
   }
 
   function firstLine(text) {
-    if (!text) { return 'Nota vazia'; }
+    if (!text) { return 'Empty Note'; }
     const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-    if (!lines.length) { return 'Nota vazia'; }
+    if (!lines.length) { return 'Empty Note'; }
 
     const heading = lines.find(l => /^#{1,3}\s+/.test(l));
     if (heading) {
