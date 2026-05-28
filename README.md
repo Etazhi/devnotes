@@ -81,6 +81,6 @@ No configuration required. DevNotes works out of the box.
 
 ## Release Notes
 
-### 0.0.3
+### 0.0.4
 
 Initial release of "DevNotes by Etazhi" now available.

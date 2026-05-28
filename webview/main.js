@@ -5,7 +5,6 @@
 
   let notes = [];
   let activeFilter = 'all';
-  let fileFilterOn = false;
   let currentUserId = null;
 
   let editorFile = null;
@@ -46,9 +45,6 @@
   document.getElementById('f-public')
     .addEventListener('click', () => setFilter('public'));
 
-  document.getElementById('btn-file-filter')
-    .addEventListener('click', toggleFileFilter);
-
   document.getElementById('btn-new-note')
     .addEventListener('click', () => {
       vscode.postMessage({ type: 'newNote' });
@@ -63,7 +59,6 @@
     const filtered = notes.filter(n => {
       if (activeFilter === 'private' && n.scope !== 'private') { return false; }
       if (activeFilter === 'public'  && n.scope !== 'public')  { return false; }
-      if (fileFilterOn && n.filePath !== editorFile)            { return false; }
       if (q && !(n.text ?? '').toLowerCase().includes(q) && !(n.filePath ?? '').toLowerCase().includes(q)) {
         return false;
       }
@@ -165,12 +160,6 @@
     });
     vscode.postMessage({type: 'filter', scope: f})
     //renderNotes();
-  }
-
-  function toggleFileFilter() {
-    fileFilterOn = !fileFilterOn;
-    document.getElementById('btn-file-filter').classList.toggle('active', fileFilterOn);
-    renderNotes();
   }
 
   // ── Helpers ─────────────────────────────────────────────────────────────────

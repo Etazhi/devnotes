@@ -2,7 +2,7 @@
   "name": "devnotes-etazhi",
   "displayName": "DevNotes by Etazhi",
   "description": "Attach Markdown notes to your code, directly inside VS Code.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publisher": "Etazhi",
   "repository": {
     "type": "git",

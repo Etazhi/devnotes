@@ -6,7 +6,6 @@
   <meta http-equiv="Content-Security-Policy"
     content="default-src 'none'; style-src {{WEBVIEW_CSP_SOURCE}} 'unsafe-inline'; script-src 'nonce-{{NONCE}}' {{WEBVIEW_CSP_SOURCE}};" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
-  <link rel="stylesheet" href="{{GLOBAL_CSS_URI}}">
   <link rel="stylesheet" href="{{INDEX_CSS_URI}}">
   <style>
     #ctx-hint { cursor: default; border-radius: 4px; padding: 2px 6px; transition: background .15s, color .15s; }
@@ -22,17 +21,6 @@
 
   <div class="toolbar">
     <span class="toolbar-title">DevNotes</span>
-    <div class="toolbar-actions">
-      <button class="icon-btn" id="btn-file-filter" title="Filter by current file">
-        <i class="ti ti-file-code"></i>
-      </button>
-      <button class="icon-btn" id="btn-sync" title="Sync public notes">
-        <i class="ti ti-refresh"></i>
-      </button>
-      <button class="icon-btn" id="btn-github" title="GitHub Account">
-        <i class="ti ti-brand-github"></i>
-      </button>
-    </div>
   </div>
 
   <div class="search-bar">

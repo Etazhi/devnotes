@@ -206,9 +206,6 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     const nonce     = this.getNonce();
     const cspSource = webview.cspSource;
 
-    const globalCssUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(webviewDir, 'css', 'global.css')
-    );
     const jsUri = webview.asWebviewUri(
       vscode.Uri.joinPath(webviewDir, 'main.js')
     );
@@ -235,7 +232,6 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       html = html.replace(/\{\{NONCE\}\}/g,              nonce);
       html = html.replace(/\{\{WEBVIEW_CSP_SOURCE\}\}/g, cspSource);
       html = html.replace(/\{\{JS_URI\}\}/g,             jsUri.toString());
-      html = html.replace(/\{\{GLOBAL_CSS_URI\}\}/g,     globalCssUri.toString());
       html = html.replace(/\{\{INDEX_CSS_URI\}\}/g,      indexCssUri.toString());
       html = html.replace(/\{\{NO_SESSION_CSS_URI\}\}/g, noSessionCssUri.toString());
       html = html.replace('{{NOTE_GROUPS_JS_URI}}', noteGroupsJsUri.toString());
